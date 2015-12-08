@@ -66,15 +66,19 @@ public class MainActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            //Cria uma String com previsões para preencher a lista
             String[] previewArray = {"Today - Sunney - 88/63", "Today - Sunney - 88/63"
                     , "Today - Sunney - 88/63","Today - Sunney - 88/63","Today - Sunney - 88/63"
                     ,"Today - Sunney - 88/63","Today - Sunney - 88/63", "Today - Sunney - 88/63"
                     ,"Today - Sunney - 88/63","Today - Sunney - 88/63"};
-
+            //Cria uma lista a partir do Array de String
             List<String> previewList = new ArrayList<String>(Arrays.asList(previewArray));
+            //Define o ArrayAdapter com um Contexto, Um layout com uma lista, Uma View a ser listada, e a Lista para preencher
             ArrayAdapter<String> previewArrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,
                     R.id.list_item_forecast_textview,previewList);
+            //Cria a View de Lista com a Lista contida no layout
             ListView listView = (ListView) rootView.findViewById(R.id.list_item_forecast);
+            //Preenche a Lista com o ArrayAdapter formado antes
             listView.setAdapter(previewArrayAdapter);
 
             return rootView;
