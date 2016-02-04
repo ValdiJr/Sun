@@ -1,5 +1,6 @@
 package com.example.defensor.sunshine;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -101,8 +102,10 @@ public class ForecastFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(getActivity(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_LONG).show();
-
+               // Toast.makeText(getActivity(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_LONG).show();
+                Intent detailIntent = new Intent(getActivity(),DetailActivity.class);
+                detailIntent.putExtra("detailPreview",parent.getItemAtPosition(position).toString());
+                startActivity(detailIntent);
             }
         });
 
@@ -194,9 +197,11 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
 
     @Override
     protected void onPostExecute(String[] result) {
-
+            //limpa o array
             previewArrayAdapter.clear();
             for (String previewByDay : result){
+                //Para cada string no array insere na lista e a atualiza uilizando notyfyChange
+                //Seguindo o padrão observer
                 previewArrayAdapter.add(previewByDay);
             }
         }

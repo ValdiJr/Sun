@@ -26,9 +26,10 @@ import android.view.View;
         import android.view.MenuItem;
         import android.view.View;
         import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class DetailActivity extends ActionBarActivity {
-
+    public static String sauda;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,9 @@ public class DetailActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+        Bundle bundle = getIntent().getExtras();
+        sauda=bundle.getString("detailPreview");
+
     }
 
 
@@ -76,7 +80,14 @@ public class DetailActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+
+            TextView tv = (TextView) rootView.findViewById(R.id.detail_textview);
+            tv.setText(sauda);
             return rootView;
+
+
+
         }
     }
 }
