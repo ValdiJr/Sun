@@ -16,6 +16,7 @@ package com.example.defensor.sunshine;
  * limitations under the License.
  */
 
+import android.content.Intent;
 import android.view.View;
 
         import android.os.Bundle;
@@ -61,6 +62,8 @@ public class DetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent detailIntent = new Intent(this,SettingsActivity.class);
+            startActivity(detailIntent);
             return true;
         }
 

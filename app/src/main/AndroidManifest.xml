@@ -27,6 +27,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.defensor.sunshine.MainActivity" />
         </activity>
+        <activity
+            android:name="com.example.defensor.sunshine.SettingsActivity"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.defensor.sunshine.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

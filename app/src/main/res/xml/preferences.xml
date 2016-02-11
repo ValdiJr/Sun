@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:defaultValue="94305"
+        android:enabled="true"
+        android:key="@string/key_postcode"
+        android:title="@string/title_postcode"
+
+
+
+        />
+</PreferenceScreen>

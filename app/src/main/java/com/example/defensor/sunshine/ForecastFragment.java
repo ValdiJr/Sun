@@ -1,6 +1,7 @@
 package com.example.defensor.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -71,6 +72,9 @@ public class ForecastFragment extends Fragment {
                 String postcode = mEdit.getText().toString();
                 fwt.execute(postcode);
                 return true;
+            }case R.id.action_settings: {
+                Intent detailIntent = new Intent(getActivity(),DetailActivity.class);
+                startActivity(detailIntent);
             }
             default:
                 return super.onOptionsItemSelected(item);
