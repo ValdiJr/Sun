@@ -1,9 +1,11 @@
 package com.example.defensor.sunshine;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -64,23 +66,31 @@ public class ForecastFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_refresh: {
 
-                FeatchWeatherTask fwt = new FeatchWeatherTask();
-                //Pega a View, nesse caso a rootView
-
-
-                EditText mEdit   = (EditText)getView().findViewById(R.id.cep_editText);
-                String postcode = mEdit.getText().toString();
-                fwt.execute(postcode);
+                updateWeather();
                 return true;
-            }case R.id.action_settings: {
-                Intent detailIntent = new Intent(getActivity(),DetailActivity.class);
+            }case R.id.action_settings_main: {
+
+                Intent detailIntent = new Intent(getActivity(),SettingsActivity.class);
                 startActivity(detailIntent);
+                return true;
             }
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+     public void updateWeather (){
+         FeatchWeatherTask fwt = new FeatchWeatherTask();
+         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+         String sharedPostCode=sharedPref.getString(getString(R.string.key_postcode),"50000");
+         fwt.execute(sharedPostCode);
 
+     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,16 +98,9 @@ public class ForecastFragment extends Fragment {
 
 
 
-        //Cria uma String com previsões para preencher a lista
-        String[] previewArray = {"Today - Sunney - 88/63", "Today - Sunney - 88/63"
-                , "Today - Sunney - 88/63","Today - Sunney - 88/63","Today - Sunney - 88/63"
-                ,"Today - Sunney - 88/63","Today - Sunney - 88/63", "Today - Sunney - 88/63"
-                ,"Today - Sunney - 88/63","Today - Sunney - 88/63"};
-        //Cria uma lista a partir do Array de String
-        List<String> previewList = new ArrayList<String>(Arrays.asList(previewArray));
-        //Define o ArrayAdapter com um Contexto, Um layout com uma lista, Uma View a ser listada, e a Lista para preencher
+
         previewArrayAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,
-                R.id.list_item_forecast_textview,previewList);
+                R.id.list_item_forecast_textview);
         //Cria a View de Lista com a Lista contida no layout
         ListView listView = (ListView) rootView.findViewById(R.id.list_item_forecast);
         //Preenche a Lista com o ArrayAdapter formado antes
@@ -141,8 +144,13 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
             // Construct the URL for the OpenWeatherMap query
             // Possible parameters are available at OWM's forecast API page, at
             // http://openweathermap.org/API#forecast cep=94043
-            URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=" + params[0] + "&mode=json&units=metric&cnt=7&APPID=2bfd6c44bcc4772a9b578fc3ce0400d8");
-
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String temperature_unit=sharedPref.getString("key_temperature_units","metric");
+            String urlString = "http://api.openweathermap.org/data/2.5/forecast/daily?q=" + params[0] + "&mode=json&units=" +
+                    temperature_unit+"" +
+                    "&cnt=7&APPID=2bfd6c44bcc4772a9b578fc3ce0400d8";
+            URL url = new URL(urlString);
+            Log.i("JSON_TAG", urlString);
             // Create the request to OpenWeatherMap, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
             //especíífica o método da requisição
@@ -172,7 +180,7 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
                 forecastJsonStr = null;
             }
             forecastJsonStr = buffer.toString();
-            Log.i("JSON_TAG", forecastJsonStr);
+
             return getWeatherDataFromJson(forecastJsonStr, 7);
 
         } catch (IOException e) {
@@ -305,7 +313,7 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
         }
 
         for (String s : resultStrs) {
-            Log.v("FetcheAsycTask", "Forecast entry: " + s);
+            //Log.v("FetcheAsycTask", "Forecast entry: " + s);
         }
         return resultStrs;
 

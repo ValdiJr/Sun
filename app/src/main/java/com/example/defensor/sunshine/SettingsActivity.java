@@ -2,6 +2,7 @@ package com.example.defensor.sunshine;
 
 
 
+        import android.content.Context;
         import android.content.SharedPreferences;
         import android.os.Bundle;
         import android.preference.ListPreference;
@@ -28,10 +29,15 @@ public class SettingsActivity extends PreferenceActivity
         addPreferencesFromResource(R.xml.preferences);
         // Add 'general' preferences, defined in the XML file
         // TODO: Add preferences from XML
-
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
         // TODO: Add preferences
+        bindPreferenceSummaryToValue(findPreference("postcode"));
+        bindPreferenceSummaryToValue(findPreference("key_temperature_units"));
+        /*onPreferenceChange(findPreference("key_temperature_units"),
+                PreferenceManager
+                        .getDefaultSharedPreferences(findPreference("key_temperature_units").getContext())
+                        .getString(findPreference("key_temperature_units").getKey(), ""));*/
     }
 
     /**
@@ -65,8 +71,10 @@ public class SettingsActivity extends PreferenceActivity
             }
         } else {
             // For other preferences, set the summary to the value's simple string representation.
+
             preference.setSummary(stringValue);
         }
+
         return true;
     }
 
