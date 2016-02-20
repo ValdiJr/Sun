@@ -9,6 +9,7 @@ package com.example.defensor.sunshine;
         import android.preference.Preference;
         import android.preference.PreferenceActivity;
         import android.preference.PreferenceManager;
+        import android.util.Log;
         import android.view.KeyEvent;
 
 /**
@@ -34,6 +35,7 @@ public class SettingsActivity extends PreferenceActivity
         // TODO: Add preferences
         bindPreferenceSummaryToValue(findPreference("postcode"));
         bindPreferenceSummaryToValue(findPreference("key_temperature_units"));
+        teste(findPreference("key_temperature_units"));
         /*onPreferenceChange(findPreference("key_temperature_units"),
                 PreferenceManager
                         .getDefaultSharedPreferences(findPreference("key_temperature_units").getContext())
@@ -45,6 +47,10 @@ public class SettingsActivity extends PreferenceActivity
      * Also fires the listener once, to initialize the summary (so it shows up before the value
      * is changed.)
      */
+    private void teste (Preference preference){
+        preference.setOnPreferenceChangeListener(this);
+        Log.i("Teste de Listener",preference.toString());
+    }
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);

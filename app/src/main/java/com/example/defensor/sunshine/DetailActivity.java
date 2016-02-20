@@ -17,6 +17,10 @@ package com.example.defensor.sunshine;
  */
 
 import android.content.Intent;
+import android.net.Uri;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.View;
 
         import android.os.Bundle;
@@ -31,6 +35,7 @@ import android.widget.TextView;
 
 public class DetailActivity extends ActionBarActivity {
     public static String sauda;
+    private ShareActionProvider mShareActionProvider;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +55,18 @@ public class DetailActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+
         return true;
+    }
+    private void doShare(Intent shareIntent) {
+        if (mShareActionProvider != null) {
+
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
     }
 
     @Override
@@ -60,6 +76,17 @@ public class DetailActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (id==R.id.menu_item_share){
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+            sendIntent.setType("text/plain");
+            doShare(sendIntent);
+            startActivity(Intent.createChooser(sendIntent, "Compartilhar Menssagem"));
+
+            Log.i("Opção SHARE","Botao Share Ativado");
+            return true;
+        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent detailIntent = new Intent(this,SettingsActivity.class);

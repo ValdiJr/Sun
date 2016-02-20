@@ -3,6 +3,7 @@ package com.example.defensor.sunshine;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +42,8 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    private String longitude;
+    private String latitude;
     private ArrayAdapter<String> previewArrayAdapter;
     public ForecastFragment() {
     }
@@ -72,6 +74,24 @@ public class ForecastFragment extends Fragment {
 
                 Intent detailIntent = new Intent(getActivity(),SettingsActivity.class);
                 startActivity(detailIntent);
+                return true;
+            }case R.id.action_map: {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String sharedPostCode=sharedPref.getString(getString(R.string.key_postcode), "50000");
+                Uri urigeolocation=Uri.parse("geo:0,0?");
+                urigeolocation.buildUpon().appendQueryParameter("q",sharedPostCode);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(urigeolocation.buildUpon().appendQueryParameter("q",sharedPostCode).build());
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
+
+
+
+
+                Log.i("Longitude/Latitude", longitude + " / " + latitude);
                 return true;
             }
             default:
@@ -180,7 +200,8 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
                 forecastJsonStr = null;
             }
             forecastJsonStr = buffer.toString();
-
+            getGeoLocalization(forecastJsonStr);
+            Log.i("Resultado Query JSON", forecastJsonStr);
             return getWeatherDataFromJson(forecastJsonStr, 7);
 
         } catch (IOException e) {
@@ -217,7 +238,14 @@ public class FeatchWeatherTask extends AsyncTask<String, Void, String[]> {
                 previewArrayAdapter.add(previewByDay);
             }
         }
+    private void getGeoLocalization(String forecastString) throws JSONException {
+        JSONObject forecastJson = new JSONObject(forecastString);
+        JSONObject cityJson = forecastJson.getJSONObject("city");
+        JSONObject coordJson= cityJson.getJSONObject("coord");
+        longitude=coordJson.getString("lon");
+        latitude=coordJson.getString("lat");
 
+    }
 
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
