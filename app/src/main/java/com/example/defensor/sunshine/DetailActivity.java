@@ -18,6 +18,7 @@ package com.example.defensor.sunshine;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -36,6 +37,8 @@ import android.widget.TextView;
 public class DetailActivity extends ActionBarActivity {
     public static String sauda;
     private ShareActionProvider mShareActionProvider;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,18 +59,28 @@ public class DetailActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
 
-        MenuItem item = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        MenuItem menuItem = menu.findItem(R.id.action_share);
 
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
+        // Attach an intent to this ShareActionProvider.  You can update this at any time,
+        // like when the user selects a new piece of data they might like to share.
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareHistoryFileName("DEFAULT_SHARE_HISTORY_FILE_NAME");
+            mShareActionProvider.setShareIntent(createShareForecastIntent());
+        }
         return true;
     }
-    private void doShare(Intent shareIntent) {
-        if (mShareActionProvider != null) {
 
-            mShareActionProvider.setShareIntent(shareIntent);
-        }
+    private Intent createShareForecastIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        return shareIntent;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -75,18 +88,6 @@ public class DetailActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id==R.id.menu_item_share){
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-            sendIntent.setType("text/plain");
-            doShare(sendIntent);
-            startActivity(Intent.createChooser(sendIntent, "Compartilhar Menssagem"));
-
-            Log.i("Opção SHARE","Botao Share Ativado");
-            return true;
-        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent detailIntent = new Intent(this,SettingsActivity.class);
